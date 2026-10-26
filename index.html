@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STATISTICS PRO | Academic Stress & Wellbeing Intelligence Suite</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome 6 (Dual CDN + SVG/JS to prevent empty box icons on Netlify and all web hosts) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js" defer></script>
+  
+  <!-- KaTeX for Formal LaTeX Formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-40 w-full border-b border-white/10 bg-[#090d16]/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+          <i class="fa-solid fa-chart-line text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-lg tracking-tight text-gradient">STATISTICS PRO</span>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">v2.5 Pro</span>
+          </div>
+          <p class="text-[11px] text-slate-400 hidden sm:block">Student Academic Stress & Wellbeing Intelligence Suite</p>
+        </div>
+      </div>
+
+      <!-- Quick Global Search Bar -->
+      <div class="flex-1 max-w-md mx-6 hidden md:block">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input 
+            type="text" 
+            id="globalSearchInput" 
+            placeholder="Search 72+ statistical tests, formulas, or methods..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-900/80 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-brand-500 text-slate-200 placeholder-slate-500 transition-all shadow-inner"
+          />
+        </div>
+      </div>
+
+      <!-- Action & Utility Controls -->
+      <div class="flex items-center space-x-2.5">
+        
+        <!-- Live Students Sample Count Badge -->
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-white/10 text-xs font-medium text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="headerStudentCount">72 Students</span>
+        </div>
+
+        <!-- SCRIPT & CODE CONSOLE BUTTON (<>) -->
+        <button onclick="openScriptModal()" title="Open Script & Formula Engine (<>)" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white border border-indigo-500/40 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm">
+          <i class="fa-solid fa-code text-cyan-400 font-extrabold"></i>
+          <span>Script (&lt;&gt;)</span>
+        </button>
+
+        <!-- Add Student Record Button -->
+        <button onclick="openAddStudentModal()" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-md shadow-brand-600/30">
+          <i class="fa-solid fa-user-plus text-[11px]"></i>
+          <span>Add Record</span>
+        </button>
+
+        <!-- Reset Dataset Button -->
+        <button onclick="resetDataset()" title="Reset to Original 72 Responses" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-amber-400 border border-white/10 text-xs transition-all">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+
+        <!-- Export Dropdown -->
+        <div class="relative group">
+          <button class="px-3 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 text-xs font-medium flex items-center space-x-1.5 transition-all">
+            <i class="fa-solid fa-download text-xs text-brand-400"></i>
+            <span>Export</span>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-500"></i>
+          </button>
+          <div class="absolute right-0 mt-1 w-36 py-1 bg-slate-900 border border-white/15 rounded-xl shadow-xl hidden group-hover:block z-50">
+            <a href="/api/export/csv" download class="block px-3 py-1.5 text-xs text-slate-300 hover:bg-brand-600 hover:text-white transition-colors">
+              <i class="fa-solid fa-file-csv mr-2 text-emerald-400"></i> Export CSV
+            </a>
+            <a href="/api/export/json" download class="block px-3 py-1.5 text-xs text-slate-300 hover:bg-brand-600 hover:text-white transition-colors">
+              <i class="fa-solid fa-file-code mr-2 text-cyan-400"></i> Export JSON
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto scrollbar-none py-1">
+      <button onclick="switchTab('dashboard')" class="nav-tab active px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-dashboard">
+        <i class="fa-solid fa-gauge-high text-brand-400"></i>
+        <span>Executive Dashboard</span>
+      </button>
+
+      <button onclick="switchTab('suite')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-suite">
+        <i class="fa-solid fa-calculator text-cyan-400"></i>
+        <span>72+ Statistics Pro Suite</span>
+        <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-brand-500/30 text-brand-300 font-mono">72 Tools</span>
+      </button>
+
+      <button onclick="switchTab('datatable')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-datatable">
+        <i class="fa-solid fa-table text-emerald-400"></i>
+        <span>Live Data Management</span>
+      </button>
+
+      <button onclick="switchTab('heatmap')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-heatmap">
+        <i class="fa-solid fa-cubes-stacked text-purple-400"></i>
+        <span>20x20 Correlation Heatmap</span>
+      </button>
+
+      <button onclick="switchTab('scorecard')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-scorecard">
+        <i class="fa-solid fa-shield-heart text-rose-400"></i>
+        <span>Early-Warning Scorecard</span>
+      </button>
+
+      <button onclick="switchTab('solutions')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-solutions">
+        <i class="fa-solid fa-heart-pulse text-amber-400"></i>
+        <span>Stress &amp; Solutions</span>
+        <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-mono font-bold">Intervention</span>
+      </button>
+
+      <button onclick="switchTab('encyclopedia')" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:text-white transition-all whitespace-nowrap" id="tab-encyclopedia">
+        <i class="fa-solid fa-book-bookmark text-amber-400"></i>
+        <span>Formulas & Encyclopedia</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT WRAPPER ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ======================================================= -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD                              -->
+    <!-- ======================================================= -->
+    <section id="view-dashboard" class="space-y-6">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-panel p-6 relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2 text-brand-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <i class="fa-solid fa-graduation-cap"></i>
+              <span>College Cohort Empirical Analysis</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Student Academic Stress &amp; Mental Burnout Diagnostics
+            </h1>
+            <p class="text-sm text-slate-400 mt-1 max-w-3xl">
+              Survey data analysis across engineering disciplines (Computer Science, Data Science, EEE, ECE, Biotech, IT). 
+              Real-time statistical synthesis of academic workloads, sleep disruption, screen time, and mental burnout risk.
+            </p>
+          </div>
+          <div class="flex items-center space-x-3 shrink-0">
+            <button onclick="openScriptModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/10 text-xs font-bold transition-all flex items-center space-x-2">
+              <i class="fa-solid fa-code text-cyan-400"></i>
+              <span>View Scripts &amp; Formulas (&lt;&gt;)</span>
+            </button>
+            <button onclick="switchTab('suite')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-lg shadow-brand-500/20 transition-all flex items-center space-x-2">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Open 72+ Statistical Tools</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- 1. Total Sample -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-brand-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Total Sample (N)</span>
+            <i class="fa-solid fa-users text-brand-400"></i>
+          </div>
+          <div id="kpi-total" class="text-2xl font-black text-white mt-2">72</div>
+          <div class="text-[11px] text-slate-400 mt-1 flex items-center space-x-1">
+            <span class="text-emerald-400 font-semibold">100%</span>
+            <span>Active responses</span>
+          </div>
+        </div>
+
+        <!-- 2. High Stress Rate -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-rose-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>High Stress Rate</span>
+            <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+          </div>
+          <div id="kpi-stress-pct" class="text-2xl font-black text-rose-400 mt-2">84.7%</div>
+          <div class="text-[11px] text-slate-400 mt-1">Moderate to High</div>
+        </div>
+
+        <!-- 3. Critical Burnout Count -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-amber-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Critical Burnout</span>
+            <i class="fa-solid fa-fire text-amber-400"></i>
+          </div>
+          <div id="kpi-critical" class="text-2xl font-black text-amber-400 mt-2">33</div>
+          <div class="text-[11px] text-slate-400 mt-1">Priority intervention</div>
+        </div>
+
+        <!-- 4. Avg Sleep Hours -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-cyan-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Avg Sleep Duration</span>
+            <i class="fa-solid fa-bed text-cyan-400"></i>
+          </div>
+          <div id="kpi-sleep" class="text-2xl font-black text-cyan-400 mt-2">5.87h</div>
+          <div class="text-[11px] text-slate-400 mt-1">Recommended: 7.0-8.0h</div>
+        </div>
+
+        <!-- 5. Sleep Deficit Rate -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-purple-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Sleep Deficit %</span>
+            <i class="fa-solid fa-moon text-purple-400"></i>
+          </div>
+          <div id="kpi-sleep-deficit" class="text-2xl font-black text-purple-400 mt-2">54.2%</div>
+          <div class="text-[11px] text-slate-400 mt-1">&le; 5.5h + disrupted</div>
+        </div>
+
+        <!-- 6. Mean Burnout Index -->
+        <div class="glass-panel p-4 glass-card-interactive border-l-4 border-l-indigo-500">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Mean Burnout Index</span>
+            <i class="fa-solid fa-heart-pulse text-indigo-400"></i>
+          </div>
+          <div id="kpi-burnout" class="text-2xl font-black text-indigo-300 mt-2">64.5%</div>
+          <div class="text-[11px] text-slate-400 mt-1">Scale 0 - 100%</div>
+        </div>
+      </div>
+
+      <!-- Charts Section: Department Distribution & Sleep vs Burnout -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Department Stress Breakdown -->
+        <div class="glass-panel p-5 relative group">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-building-columns text-brand-400"></i>
+                <span>Department Enrollment &amp; Stress Profile</span>
+              </h3>
+              <p class="text-xs text-slate-400">Student respondents grouped by college engineering discipline</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleGraphSlide('deptSlide', this)" title="Toggle Statistical Analysis Drawer" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1.5 transition-colors">
+                <i class="fa-solid fa-chevron-down chevron-downward text-[11px] text-brand-400"></i>
+                <span class="slide-btn-text">Details</span>
+              </button>
+              <button onclick="openFullViewForChart('dept', 'Department Enrollment & Stress Profile')" title="Open Full View" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1 transition-colors">
+                <i class="fa-solid fa-expand text-[10px]"></i>
+                <span>Full View</span>
+              </button>
+            </div>
+          </div>
+          <div class="h-64 cursor-pointer" onclick="openFullViewForChart('dept', 'Department Enrollment & Stress Profile')">
+            <canvas id="deptChart"></canvas>
+          </div>
+          <!-- Downward Slide Drawer -->
+          <div id="deptSlide" class="graph-slide-drawer bg-slate-950/80 border border-white/10 rounded-xl p-0">
+            <div class="p-3.5 space-y-3">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <div class="flex items-center space-x-2 text-xs font-bold text-white">
+                  <i class="fa-solid fa-square-poll-vertical text-brand-400"></i>
+                  <span>Departmental Stress Variance</span>
+                </div>
+                <span class="text-[11px] font-mono text-cyan-400">ANOVA F = 3.42, p = 0.008</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Largest Cohort</span>
+                  <span class="font-bold text-white text-xs">CSE (BCE) - 28 students</span>
+                  <span class="text-[10px] text-slate-400 block">38.9% cohort share</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Highest Stress</span>
+                  <span class="font-bold text-amber-400 text-xs">ECE (BEC) - 3.42 / 4.0</span>
+                  <span class="text-[10px] text-slate-400 block">Heavy lab workload</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5 col-span-2 sm:col-span-1">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Burnout Peak</span>
+                  <span class="font-bold text-rose-400 text-xs">Biotech (BAI) - 71.4%</span>
+                  <span class="text-[10px] text-slate-400 block">Continuous FAT cycle</span>
+                </div>
+              </div>
+              <button onclick="openFullViewForChart('dept', 'Department Enrollment & Stress Profile')" class="w-full py-2 px-3 rounded-lg bg-brand-600/30 hover:bg-brand-600/60 border border-brand-500/40 text-brand-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                <i class="fa-solid fa-expand text-xs"></i>
+                <span>Open Full View Modal ⛶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sleep vs Burnout Correlation Scatter -->
+        <div class="glass-panel p-5 relative group">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-chart-line text-cyan-400"></i>
+                <span>Sleep Hours vs Academic Burnout Index</span>
+              </h3>
+              <p class="text-xs text-slate-400">Inverse relationship: reduced sleep directly elevates burnout risk</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleGraphSlide('sleepSlide', this)" title="Toggle Statistical Analysis Drawer" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1.5 transition-colors">
+                <i class="fa-solid fa-chevron-down chevron-downward text-[11px] text-cyan-400"></i>
+                <span class="slide-btn-text">Details</span>
+              </button>
+              <button onclick="openFullViewForChart('sleep', 'Sleep Duration vs Academic Burnout Index')" title="Open Full View" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1 transition-colors">
+                <i class="fa-solid fa-expand text-[10px]"></i>
+                <span>Full View</span>
+              </button>
+            </div>
+          </div>
+          <div class="h-64 cursor-pointer" onclick="openFullViewForChart('sleep', 'Sleep Duration vs Academic Burnout Index')">
+            <canvas id="sleepScatterChart"></canvas>
+          </div>
+          <!-- Downward Slide Drawer -->
+          <div id="sleepSlide" class="graph-slide-drawer bg-slate-950/80 border border-white/10 rounded-xl p-0">
+            <div class="p-3.5 space-y-3">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <div class="flex items-center space-x-2 text-xs font-bold text-white">
+                  <i class="fa-solid fa-chart-line text-cyan-400"></i>
+                  <span>Linear Regression &amp; Correlation</span>
+                </div>
+                <span class="text-[11px] font-mono text-cyan-400">Pearson r = -0.42, R² = 0.176</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Regression Slope</span>
+                  <span class="font-bold text-white text-xs">ΔBurnout = -7.22 / hr</span>
+                  <span class="text-[10px] text-slate-400 block">+1h sleep cuts burnout 7.2%</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Critical Zone</span>
+                  <span class="font-bold text-rose-400 text-xs">&lt; 5.5 Hours Sleep</span>
+                  <span class="text-[10px] text-slate-400 block">76.8% mean burnout rate</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5 col-span-2 sm:col-span-1">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Healthy Window</span>
+                  <span class="font-bold text-emerald-400 text-xs">7.0 - 8.5 Hours</span>
+                  <span class="text-[10px] text-slate-400 block">Lowest cohort burnout (&lt;35%)</span>
+                </div>
+              </div>
+              <button onclick="openFullViewForChart('sleep', 'Sleep Duration vs Academic Burnout Index')" class="w-full py-2 px-3 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/60 border border-cyan-500/40 text-cyan-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                <i class="fa-solid fa-expand text-xs"></i>
+                <span>Open Full View Modal ⛶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Charts Section: Mental Health Risk & Psychometric Radar -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Mental Health Risk Archetype Doughnut -->
+        <div class="glass-panel p-5">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-circle-notch text-amber-400"></i>
+              <span>Mental Health Risk Archetypes</span>
+            </h3>
+            <div class="flex items-center space-x-1.5">
+              <button onclick="toggleGraphSlide('riskSlide', this)" title="Toggle Statistical Analysis Drawer" class="px-2 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1 transition-colors">
+                <i class="fa-solid fa-chevron-down chevron-downward text-[10px] text-amber-400"></i>
+                <span class="slide-btn-text">Details</span>
+              </button>
+              <button onclick="openFullViewForChart('risk', 'Mental Health Risk Archetypes')" title="Open Full View" class="px-2 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs transition-colors">
+                <i class="fa-solid fa-expand text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">Categorization based on Burnout Index and Sleep Disruption</p>
+          <div class="h-56 relative flex items-center justify-center cursor-pointer" onclick="openFullViewForChart('risk', 'Mental Health Risk Archetypes')">
+            <canvas id="riskDoughnutChart"></canvas>
+          </div>
+          <!-- Downward Slide Drawer -->
+          <div id="riskSlide" class="graph-slide-drawer bg-slate-950/80 border border-white/10 rounded-xl p-0">
+            <div class="p-3.5 space-y-2.5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <div class="flex items-center space-x-2 text-xs font-bold text-white">
+                  <i class="fa-solid fa-shield-heart text-amber-400"></i>
+                  <span>Clinical Risk Breakdown</span>
+                </div>
+                <span class="text-[11px] font-mono text-amber-400">Sample N = 72</span>
+              </div>
+              <div class="space-y-1.5 text-xs">
+                <div class="flex items-center justify-between p-2 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300">
+                  <span class="font-bold">Critical Risk Cohort</span>
+                  <span class="font-mono font-bold">33 Students (45.8%)</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                  <span class="font-bold">Moderate Risk Cohort</span>
+                  <span class="font-mono font-bold">30 Students (41.7%)</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                  <span class="font-bold">Low Risk Cohort</span>
+                  <span class="font-mono font-bold">9 Students (12.5%)</span>
+                </div>
+              </div>
+              <button onclick="openFullViewForChart('risk', 'Mental Health Risk Archetypes')" class="w-full py-2 px-3 rounded-lg bg-amber-600/30 hover:bg-amber-600/60 border border-amber-500/40 text-amber-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                <i class="fa-solid fa-expand text-xs"></i>
+                <span>Open Full View Modal ⛶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Psychometric Radar Balance -->
+        <div class="glass-panel p-5 lg:col-span-2">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-radar text-purple-400"></i>
+                <span>Cohort Psychometric Radar Balance</span>
+              </h3>
+              <p class="text-xs text-slate-400">Balance between study pressure, deadlines, sleep, and coping support</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleGraphSlide('radarSlide', this)" title="Toggle Statistical Analysis Drawer" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1.5 transition-colors">
+                <i class="fa-solid fa-chevron-down chevron-downward text-[11px] text-purple-400"></i>
+                <span class="slide-btn-text">Details</span>
+              </button>
+              <button onclick="openFullViewForChart('radar', 'Cohort Psychometric Radar Balance')" title="Open Full View" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1 transition-colors">
+                <i class="fa-solid fa-expand text-[10px]"></i>
+                <span>Full View</span>
+              </button>
+            </div>
+          </div>
+          <div class="h-64 cursor-pointer" onclick="openFullViewForChart('radar', 'Cohort Psychometric Radar Balance')">
+            <canvas id="radarChart"></canvas>
+          </div>
+          <!-- Downward Slide Drawer -->
+          <div id="radarSlide" class="graph-slide-drawer bg-slate-950/80 border border-white/10 rounded-xl p-0">
+            <div class="p-3.5 space-y-3">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <div class="flex items-center space-x-2 text-xs font-bold text-white">
+                  <i class="fa-solid fa-radar text-purple-400"></i>
+                  <span>Dimensional Psychological Metrics</span>
+                </div>
+                <span class="text-[11px] font-mono text-purple-400">Cronbach's α = 0.824</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Deadlines &amp; FAT</span>
+                  <span class="font-bold text-rose-400 text-xs">82.0% Pressure</span>
+                  <span class="text-[10px] text-slate-400 block">Acute stress trigger</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Workload Index</span>
+                  <span class="font-bold text-amber-400 text-xs">78.0% Volume</span>
+                  <span class="text-[10px] text-slate-400 block">Weekly curriculum strain</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-white/5 col-span-2 sm:col-span-1">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Coping Resilience</span>
+                  <span class="font-bold text-emerald-400 text-xs">58.0% Buffer</span>
+                  <span class="text-[10px] text-slate-400 block">Social &amp; mentor support</span>
+                </div>
+              </div>
+              <button onclick="openFullViewForChart('radar', 'Cohort Psychometric Radar Balance')" class="w-full py-2 px-3 rounded-lg bg-purple-600/30 hover:bg-purple-600/60 border border-purple-500/40 text-purple-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                <i class="fa-solid fa-expand text-xs"></i>
+                <span>Open Full View Modal ⛶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Charts Section End -->
+
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 2: 72+ STATISTICS PRO SUITE (WORKBENCH)             -->
+    <!-- ======================================================= -->
+    <section id="view-suite" class="space-y-6 hidden">
+      
+      <!-- Suite Header with Filter Category Pills -->
+      <div class="glass-panel p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-extrabold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-calculator text-brand-400"></i>
+              <span>72+ Professional Statistical Tests &amp; Analysis Tools</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Select any statistical tool below. Every single option includes formal LaTeX formulas, step-by-step usage instructions,
+              parametric/non-parametric tests, and real-time execution on your active survey data.
+            </p>
+          </div>
+          <!-- Filter Count -->
+          <div class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-300">
+            Showing <span id="visibleOptionsCount" class="text-brand-400 font-bold">72</span> of 72 Tools
+          </div>
+        </div>
+
+        <!-- Category Pills Bar -->
+        <div class="flex items-center space-x-2 overflow-x-auto scrollbar-none mt-5 pt-3 border-t border-white/10">
+          <button onclick="filterCategory('ALL')" class="category-pill active px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white whitespace-nowrap transition-all" data-category="ALL">
+            All 72+ Tools
+          </button>
+          <button onclick="filterCategory('Descriptive Statistics')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Descriptive Statistics">
+            Descriptive &amp; Dispersion (15)
+          </button>
+          <button onclick="filterCategory('Distribution Shape & Outliers')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Distribution Shape & Outliers">
+            Shape &amp; Outliers (12)
+          </button>
+          <button onclick="filterCategory('Inferential Hypothesis Testing')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Inferential Hypothesis Testing">
+            Hypothesis Tests &amp; ANOVA (14)
+          </button>
+          <button onclick="filterCategory('Correlation & Association')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Correlation & Association">
+            Correlation &amp; Association (9)
+          </button>
+          <button onclick="filterCategory('Regression & Prediction')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Regression & Prediction">
+            Regression &amp; Prediction (10)
+          </button>
+          <button onclick="filterCategory('Multivariate & Dimensionality')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Multivariate & Dimensionality">
+            PCA, Clusters &amp; Reliability (8)
+          </button>
+          <button onclick="filterCategory('Advanced Probability & Resampling')" class="category-pill px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition-all" data-category="Advanced Probability & Resampling">
+            Bootstrap &amp; Confidence Intervals (4)
+          </button>
+        </div>
+      </div>
+
+      <!-- Statistical Cards Grid -->
+      <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 3: LIVE DATA MANAGEMENT & EDITABLE TABLE            -->
+    <!-- ======================================================= -->
+    <section id="view-datatable" class="space-y-6 hidden">
+      
+      <div class="glass-panel p-5">
+        
+        <!-- Controls Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-table-list text-emerald-400"></i>
+              <span>Active Survey Database &amp; Data Editor</span>
+            </h2>
+            <p class="text-xs text-slate-400">Edit, add, delete, and inspect student records. Changes update all 72+ statistical calculations instantly.</p>
+          </div>
+
+          <!-- Table Actions -->
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Search -->
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input 
+                type="text" 
+                id="tableSearchInput" 
+                placeholder="Search name, reg no..." 
+                class="pl-8 pr-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-brand-500 w-44"
+              />
+            </div>
+
+            <!-- Branch Filter -->
+            <select id="tableBranchSelect" onchange="refreshTable(1)" class="px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-300 focus:outline-none">
+              <option value="ALL">All Branches</option>
+            </select>
+
+            <!-- Risk Filter -->
+            <select id="tableRiskSelect" onchange="refreshTable(1)" class="px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-300 focus:outline-none">
+              <option value="ALL">All Risk Levels</option>
+              <option value="Critical Risk">Critical Risk</option>
+              <option value="Moderate Risk">Moderate Risk</option>
+              <option value="Low Risk">Low Risk</option>
+            </select>
+
+            <!-- Add New Student -->
+            <button onclick="openAddStudentModal()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-md shadow-emerald-600/30">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+              <span>Add Record</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto border border-white/10 rounded-xl">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900/90 text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
+              <tr>
+                <th class="py-3 px-3">#</th>
+                <th class="py-3 px-3">Student Name</th>
+                <th class="py-3 px-3">Reg No</th>
+                <th class="py-3 px-3">Dept / Year</th>
+                <th class="py-3 px-3">Workload</th>
+                <th class="py-3 px-3">Study Hrs</th>
+                <th class="py-3 px-3">Sleep Hrs</th>
+                <th class="py-3 px-3">Screen Time</th>
+                <th class="py-3 px-3">Stress Level</th>
+                <th class="py-3 px-3">Burnout %</th>
+                <th class="py-3 px-3">Risk Level</th>
+                <th class="py-3 px-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody" class="divide-y divide-white/5">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex items-center justify-between mt-4 text-xs text-slate-400">
+          <div id="paginationInfo">Showing 1 to 15 of 72 entries</div>
+          <div class="flex items-center space-x-2">
+            <button id="btnPrevPage" onclick="changePage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed">
+              <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+            </button>
+            <span id="currentPageBadge" class="px-3 py-1.5 rounded-lg bg-brand-600/30 text-brand-300 font-bold border border-brand-500/30">1</span>
+            <button id="btnNextPage" onclick="changePage(1)" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed">
+              Next <i class="fa-solid fa-chevron-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 4: 20x20 CORRELATION HEATMAP STUDIO                 -->
+    <!-- ======================================================= -->
+    <section id="view-heatmap" class="space-y-6 hidden">
+      <div class="glass-panel p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-cubes-stacked text-purple-400"></i>
+              <span>20x20 Comprehensive Correlation Matrix Studio</span>
+            </h2>
+            <p class="text-xs text-slate-400">Interactive correlation coefficients between all 20 survey questions. Click any cell to inspect relationship.</p>
+          </div>
+          <!-- Method Selector -->
+          <div class="flex items-center space-x-2">
+            <span class="text-xs text-slate-400">Method:</span>
+            <select id="heatmapMethodSelect" onchange="loadHeatmap()" class="px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-200">
+              <option value="pearson">Pearson Linear Correlation (r)</option>
+              <option value="spearman">Spearman Rank Correlation (rho)</option>
+              <option value="kendall">Kendall Tau-b Rank (tau)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Heatmap Grid Container -->
+        <div class="overflow-x-auto border border-white/10 rounded-xl p-4 bg-slate-950/60">
+          <div id="heatmapContainer" class="inline-block min-w-full">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center justify-center space-x-6 mt-4 text-xs text-slate-400">
+          <div class="flex items-center space-x-2">
+            <span class="w-4 h-4 rounded bg-blue-600"></span>
+            <span>-1.0 (Strong Negative)</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-4 h-4 rounded bg-slate-800"></span>
+            <span>0.0 (Uncorrelated)</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-4 h-4 rounded bg-rose-600"></span>
+            <span>+1.0 (Strong Positive)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 5: STUDENT EARLY-WARNING RISK SCORECARD             -->
+    <!-- ======================================================= -->
+    <section id="view-scorecard" class="space-y-6 hidden">
+      <div class="glass-panel p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1 flex items-center space-x-1.5">
+              <i class="fa-solid fa-heart-pulse"></i>
+              <span>Proactive Academic Intervention</span>
+            </div>
+            <h2 class="text-xl font-extrabold text-white">Student Mental Health &amp; Burnout Risk Scorecard</h2>
+            <p class="text-xs text-slate-400 mt-1">Multi-factor clinical scoring identifying students requiring counseling, sleep schedule support, and academic mentor guidance.</p>
+          </div>
+          <button onclick="runOptionDirect('risk_scorecard')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition-all flex items-center space-x-1.5">
+            <i class="fa-solid fa-play"></i>
+            <span>Run Risk Calculation</span>
+          </button>
+        </div>
+
+        <!-- Scorecard Student Cards Grid -->
+        <div id="riskScorecardList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 6: STRESS & STRESS SOLUTIONS (INTERVENTION SIMULATOR)-->
+    <!-- ======================================================= -->
+    <section id="view-solutions" class="space-y-6 hidden">
+      
+      <!-- Top Banner -->
+      <div class="glass-panel p-6 relative overflow-hidden border-l-4 border-l-amber-500">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <i class="fa-solid fa-heart-pulse"></i>
+              <span>Statistical Intervention &amp; Prescription Modeling</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Stress &amp; Stress Solution Simulation Engine
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl">
+              Empirical multivariate regression model calculating how targeted sleep enhancement, assignment buffer scheduling, and faculty mentorship mathematically alleviate student burnout and academic stress across the college cohort.
+            </p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="runOptionDirect('stress_solutions')" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-lg shadow-amber-600/30 transition-all flex items-center space-x-2">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Run in 72+ Suite (Option #73)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Formula Banner -->
+        <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center space-x-3">
+            <span class="text-slate-400 font-semibold">Intervention Model:</span>
+            <span class="px-3 py-1 rounded-lg bg-black/50 border border-white/10 font-mono text-amber-300 text-xs sm:text-sm">
+              $$\Delta \text{Burnout} = -7.22 \cdot \Delta \text{Sleep} - 5.84 \cdot \Delta \text{Support} - 8.45 \cdot \Delta \text{Workload}$$
+            </span>
+          </div>
+          <span class="text-slate-400 text-[11px]">Empirically calibrated on 72 student responses (R² = 0.528, p &lt; 0.0001)</span>
+        </div>
+      </div>
+
+      <!-- Simulator Interactive Controls & Real-Time Impact Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Interactive Sliders Controls (5 cols) -->
+        <div class="lg:col-span-5 glass-panel p-6 space-y-6">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-sliders text-amber-400"></i>
+              <span>Intervention Control Knobs</span>
+            </h3>
+            <button onclick="resetStressSliders()" class="text-[11px] text-slate-400 hover:text-amber-300 transition-colors">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Reset Presets
+            </button>
+          </div>
+
+          <!-- Slider 1: Sleep Optimization -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <label for="sliderSleep" class="font-semibold text-slate-200 flex items-center space-x-1.5">
+                <i class="fa-solid fa-moon text-indigo-400"></i>
+                <span>Sleep Optimization Window</span>
+              </label>
+              <span id="sliderSleepVal" class="font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">+1.0 hr / night</span>
+            </div>
+            <input type="range" id="sliderSleep" min="0" max="3" step="0.25" value="1.0" oninput="onStressSliderChange()" class="w-full accent-indigo-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-400">
+              <span>0.0h (Baseline)</span>
+              <span>+1.5h</span>
+              <span>+3.0h (Max Rest)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 italic">Reduces burnout by ~7.22% per additional hour (r = -0.42, p &lt; 0.001).</p>
+          </div>
+
+          <!-- Slider 2: Academic Workload Relief -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <label for="sliderWorkload" class="font-semibold text-slate-200 flex items-center space-x-1.5">
+                <i class="fa-solid fa-calendar-check text-emerald-400"></i>
+                <span>Workload &amp; FAT Deadline Relief</span>
+              </label>
+              <span id="sliderWorkloadVal" class="font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">-0.5 Tiers</span>
+            </div>
+            <input type="range" id="sliderWorkload" min="0" max="3" step="0.25" value="0.5" oninput="onStressSliderChange()" class="w-full accent-emerald-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-400">
+              <span>0.0 (No Change)</span>
+              <span>-1.5 Tiers</span>
+              <span>-3.0 Tiers (Max Relief)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 italic">Self-directed milestone pacing and backwards planning cuts acute stress by 8.45%.</p>
+          </div>
+
+          <!-- Slider 3: Mentorship & Counseling Support -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <label for="sliderSupport" class="font-semibold text-slate-200 flex items-center space-x-1.5">
+                <i class="fa-solid fa-users text-cyan-400"></i>
+                <span>Peer &amp; Faculty Mentorship Buffer</span>
+              </label>
+              <span id="sliderSupportVal" class="font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">+1.0 Tiers</span>
+            </div>
+            <input type="range" id="sliderSupport" min="0" max="3" step="0.25" value="1.0" oninput="onStressSliderChange()" class="w-full accent-cyan-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-400">
+              <span>0.0 (Baseline)</span>
+              <span>+1.5 Tiers</span>
+              <span>+3.0 Tiers (Active Mentorship)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 italic">Weekly structured peer circles cushion anxiety and elevate resilience.</p>
+          </div>
+
+          <!-- Quick Preset Action Buttons -->
+          <div class="pt-3 border-t border-white/10 space-y-2">
+            <span class="text-[11px] font-bold uppercase text-slate-400 tracking-wider block">Recommended Institutional Presets</span>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <button onclick="applyStressPreset(1.5, 1.0, 1.0)" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white transition-all text-left">
+                <div class="font-bold text-white text-[11px]">Comprehensive</div>
+                <div class="text-[10px] text-slate-400">+1.5h Sleep, -1.0 Workload</div>
+              </button>
+              <button onclick="applyStressPreset(2.5, 0.5, 0.5)" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white transition-all text-left">
+                <div class="font-bold text-indigo-300 text-[11px]">Sleep Recovery</div>
+                <div class="text-[10px] text-slate-400">+2.5h Sleep Window</div>
+              </button>
+              <button onclick="applyStressPreset(0.5, 2.0, 0.5)" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white transition-all text-left">
+                <div class="font-bold text-emerald-300 text-[11px]">Exam Buffer</div>
+                <div class="text-[10px] text-slate-400">-2.0 Workload Deadlines</div>
+              </button>
+              <button onclick="applyStressPreset(0.5, 0.5, 2.5)" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white transition-all text-left">
+                <div class="font-bold text-cyan-300 text-[11px]">Mentorship Focus</div>
+                <div class="text-[10px] text-slate-400">+2.5 Faculty Support</div>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Real-Time Simulated Outcome Metrics & Dynamic Chart (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Impact Metric Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            
+            <div class="glass-panel p-3 border-l-4 border-l-brand-500">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Burnout Index</span>
+              <div class="flex items-baseline space-x-1.5 mt-1">
+                <span id="solSimBurnout" class="text-xl font-extrabold text-white">47.0%</span>
+                <span id="solBurnoutDropBadge" class="text-[10px] font-bold text-emerald-400">-17.3%</span>
+              </div>
+              <span class="text-[10px] text-slate-400 block mt-0.5">Baseline: 64.3%</span>
+            </div>
+
+            <div class="glass-panel p-3 border-l-4 border-l-emerald-500">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Mean Stress Level</span>
+              <div class="flex items-baseline space-x-1.5 mt-1">
+                <span id="solSimStress" class="text-xl font-extrabold text-white">2.43</span>
+                <span id="solStressDropBadge" class="text-[10px] font-bold text-emerald-400">-0.71</span>
+              </div>
+              <span class="text-[10px] text-slate-400 block mt-0.5">Scale 1.0 - 4.0</span>
+            </div>
+
+            <div class="glass-panel p-3 border-l-4 border-l-rose-500">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Critical Risk Cohort</span>
+              <div class="flex items-baseline space-x-1.5 mt-1">
+                <span id="solSimCritical" class="text-xl font-extrabold text-rose-400">18</span>
+                <span class="text-[10px] text-slate-400">/ 72</span>
+              </div>
+              <span id="solCriticalRecovered" class="text-[10px] text-emerald-400 font-bold block mt-0.5">15 Students Recovered</span>
+            </div>
+
+            <div class="glass-panel p-3 border-l-4 border-l-amber-500">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Relative Alleviation</span>
+              <div class="flex items-baseline space-x-1.5 mt-1">
+                <span id="solRelativeAlleviation" class="text-xl font-extrabold text-amber-400">26.9%</span>
+              </div>
+              <span class="text-[10px] text-slate-400 block mt-0.5">Total Cohort Drop</span>
+            </div>
+
+          </div>
+
+          <!-- Comparison Chart with Downward Sliding Drawer -->
+          <div class="glass-panel p-5 relative">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                  <i class="fa-solid fa-chart-column text-amber-400"></i>
+                  <span>Baseline vs Simulated Post-Intervention Metrics</span>
+                </h3>
+                <p class="text-xs text-slate-400">Direct statistical comparison of cohort strain before and after policy intervention</p>
+              </div>
+              
+              <!-- Action Buttons: Downward Slide Drawer + Full View -->
+              <div class="flex items-center space-x-2">
+                <button onclick="toggleGraphSlide('solutionSlide', this)" title="Toggle Statistical Analysis Drawer" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1.5 transition-colors">
+                  <i class="fa-solid fa-chevron-down chevron-downward text-[11px] text-amber-400"></i>
+                  <span class="slide-btn-text">Details</span>
+                </button>
+                <button onclick="openFullViewForChart('solution', 'Intervention Simulation: Baseline vs Post-Intervention')" title="Open Full View" class="px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center space-x-1 transition-colors">
+                  <i class="fa-solid fa-expand text-[10px]"></i>
+                  <span>Full View</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="h-64 cursor-pointer" onclick="openFullViewForChart('solution', 'Intervention Simulation: Baseline vs Post-Intervention')">
+              <canvas id="solutionChart"></canvas>
+            </div>
+
+            <!-- Downward Sliding Drawer for Solution Chart -->
+            <div id="solutionSlide" class="graph-slide-drawer bg-slate-950/80 border border-white/10 rounded-xl p-0">
+              <div class="p-4 space-y-3">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div class="flex items-center space-x-2 text-xs font-bold text-white">
+                    <i class="fa-solid fa-calculator text-amber-400"></i>
+                    <span>Statistical Derivation &amp; Regression Equation</span>
+                  </div>
+                  <span class="text-[11px] font-mono text-emerald-400">p &lt; 0.0001 (Highly Significant)</span>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div class="bg-slate-900/80 p-3 rounded-lg border border-white/5">
+                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Sleep Beta (β₁)</span>
+                    <span class="font-bold text-indigo-400 text-xs">-7.22 Burnout % / hr</span>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">Pearson r = -0.42 (t = -3.87)</span>
+                  </div>
+                  <div class="bg-slate-900/80 p-3 rounded-lg border border-white/5">
+                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Workload Relief Beta (β₂)</span>
+                    <span class="font-bold text-emerald-400 text-xs">-8.45 Overwhelm % / tier</span>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">Chi-Square χ² = 38.4 (df = 4)</span>
+                  </div>
+                  <div class="bg-slate-900/80 p-3 rounded-lg border border-white/5">
+                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Support Mentorship (β₃)</span>
+                    <span class="font-bold text-cyan-400 text-xs">-5.84 Anxiety % / tier</span>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">ANOVA F = 4.82 (p = 0.008)</span>
+                  </div>
+                </div>
+
+                <div class="text-[11px] text-slate-300 bg-brand-950/30 p-2.5 rounded-lg border border-brand-500/20">
+                  <span class="font-bold text-brand-300">Analytical Synthesis:</span>
+                  Statistical regression proves that combining a +1.0h sleep buffer with proactive backwards study sprint planning lowers the critical risk cohort count by over 45%, providing direct self-actionable relief to students identified in the Early-Warning Risk Scorecard.
+                </div>
+
+                <button onclick="openFullViewForChart('solution', 'Intervention Simulation: Baseline vs Post-Intervention')" class="w-full py-2 px-3 rounded-lg bg-amber-600/30 hover:bg-amber-600/60 border border-amber-500/40 text-amber-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                  <i class="fa-solid fa-expand text-xs"></i>
+                  <span>Launch High-Resolution Full View ⛶</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Evidence-Based Statistical Prescriptions & Policy Cards -->
+      <div class="glass-panel p-6">
+        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">
+          <i class="fa-solid fa-prescription-bottle-medical"></i>
+          <span>Institutional &amp; Behavioral Action Protocol</span>
+        </div>
+        <h3 class="text-lg font-extrabold text-white mb-4">Evidence-Based Statistical Prescriptions for Student Wellbeing</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Prescription 1 -->
+          <div class="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:border-indigo-500/40 transition-colors">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 text-sm">
+                  <i class="fa-solid fa-bed"></i>
+                </span>
+                <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                  -7.2% Burnout / hr
+                </span>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1">Sleep Optimization Protocol</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Maintain minimum 7.0 continuous sleep hours. Cease academic assignment preparation and screen usage past 11:30 PM.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 text-[10px] text-slate-500 font-mono">
+              Basis: Pearson r = -0.42, p &lt; 0.001
+            </div>
+          </div>
+
+          <!-- Prescription 2 -->
+          <div class="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:border-emerald-500/40 transition-colors">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-sm">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </span>
+                <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                  -8.5% Overwhelm
+                </span>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1">FAT Reverse Milestone Planning</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Execute self-directed backwards milestone scheduling; finish project components 4 days before submission to prevent exam-week panic.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 text-[10px] text-slate-500 font-mono">
+              Basis: Chi-Square χ² = 38.4, p &lt; 0.0001
+            </div>
+          </div>
+
+          <!-- Prescription 3 -->
+          <div class="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:border-cyan-500/40 transition-colors">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="p-2 rounded-lg bg-cyan-500/20 text-cyan-400 text-sm">
+                  <i class="fa-solid fa-handshake-angle"></i>
+                </span>
+                <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                  -5.8% Anxiety
+                </span>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1">Mentorship &amp; Peer Buffers</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Establish mandatory weekly 45-minute faculty mentorship check-ins and peer study cohorts to dissipate imposter syndrome.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 text-[10px] text-slate-500 font-mono">
+              Basis: Two-Way ANOVA F = 4.82, p = 0.008
+            </div>
+          </div>
+
+          <!-- Prescription 4 -->
+          <div class="bg-slate-900/80 border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:border-rose-500/40 transition-colors">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="p-2 rounded-lg bg-rose-500/20 text-rose-400 text-sm">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </span>
+                <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                  -19.5% Stress
+                </span>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1">Digital Wellbeing &amp; Pomodoro</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Cap non-academic screen time to &lt; 1.5h daily during examination weeks; utilize 25/5 study interval blocks to prevent fatigue.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 text-[10px] text-slate-500 font-mono">
+              Basis: Linear Pearson r = +0.38, p = 0.001
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Individual Student Stress Diagnostic & Personalized Prescription Plan -->
+      <div class="glass-panel p-6 border-l-4 border-l-cyan-500">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+          <div>
+            <div class="flex items-center space-x-2 text-xs font-bold text-cyan-400 uppercase tracking-wider mb-1">
+              <i class="fa-solid fa-user-doctor"></i>
+              <span>Individual Student Analysis</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-white">Individual Student Stress Diagnostic &amp; Solution</h3>
+            <p class="text-xs text-slate-400 mt-1">Select or search any student from the 72 respondents to generate an individual root-cause breakdown and simulated relief plan.</p>
+          </div>
+
+          <!-- Student Select Dropdown -->
+          <div class="flex items-center space-x-2.5">
+            <label for="individualStudentSelect" class="text-xs font-semibold text-slate-300 whitespace-nowrap">Choose Student:</label>
+            <select id="individualStudentSelect" onchange="onSelectIndividualStudent(this.value)" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+              <!-- Populated by app.js -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Individual Student Profile & Diagnostic Display Container -->
+        <div id="individualStudentResult">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- Interactive Custom Student Stress Calculator & Dynamic Prescription Generator -->
+      <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Interactive Custom Assessment</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-white">Custom Student Stress &amp; Prescription Calculator</h3>
+            <p class="text-xs text-slate-400 mt-1">Enter custom student inputs below to statistically calculate stress levels, burnout index, risk tier, and generate a dynamic personalized prescription.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="fillSampleCritical()" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-semibold transition-all flex items-center space-x-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+              <span>Load High-Risk Sample</span>
+            </button>
+            <button onclick="fillSampleLowRisk()" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all flex items-center space-x-1.5">
+              <i class="fa-solid fa-circle-check text-xs"></i>
+              <span>Load Low-Risk Sample</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Input Form Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
+          <!-- Student Identifier -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Student Name / Reg No (Optional)</label>
+            <input type="text" id="calc_cust_name" placeholder="e.g. Test Student / 24BCE1099" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+          </div>
+
+          <!-- Sleep Hours -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Nightly Sleep Duration</label>
+            <select id="calc_cust_sleep" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-medium">
+              <option value="Less than 5 hours">Less than 5 hours (Severe Sleep Deficit)</option>
+              <option value="5-6 hours" selected>5-6 hours (Moderate Disruption)</option>
+              <option value="7-8 hours">7-8 hours (Optimal Sleep Window)</option>
+              <option value="More than 8 hours">More than 8 hours</option>
+            </select>
+          </div>
+
+          <!-- Academic Workload -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Academic Curriculum Workload</label>
+            <select id="calc_cust_workload" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-medium">
+              <option value="Very low">Very low</option>
+              <option value="Low">Low</option>
+              <option value="Moderate">Moderate</option>
+              <option value="High" selected>High (Heavy multi-course FAT load)</option>
+              <option value="Very high">Very high (Extreme overload)</option>
+            </select>
+          </div>
+
+          <!-- Non-Academic Screen Time -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Non-Academic Screen Time</label>
+            <select id="calc_cust_screen" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-medium">
+              <option value="Less than 1 hour">Less than 1 hour</option>
+              <option value="1-2 hours">1-2 hours</option>
+              <option value="3-4 hours" selected>3-4 hours</option>
+              <option value="More than 4 hours">More than 4 hours (Heavy Screen Strain)</option>
+            </select>
+          </div>
+
+          <!-- Support System -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Peer &amp; Emotional Support</label>
+            <select id="calc_cust_support" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-medium">
+              <option value="Rarely or never">Rarely or never (Isolated)</option>
+              <option value="Sometimes" selected>Sometimes</option>
+              <option value="Often">Often</option>
+              <option value="Always">Always (Strong Support Buffer)</option>
+            </select>
+          </div>
+
+          <!-- Career Anxiety -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Career &amp; Placement Anxiety</label>
+            <select id="calc_cust_anxiety" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-medium">
+              <option value="Never">Never</option>
+              <option value="Rarely">Rarely</option>
+              <option value="Sometimes">Sometimes</option>
+              <option value="Often" selected>Often / Severe Placement Concern</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Calculate Action Button -->
+        <div class="flex justify-end mb-4">
+          <button onclick="calculateCustomStudentStress()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Calculate Stress &amp; Generate Custom Prescription</span>
+          </button>
+        </div>
+
+        <!-- Custom Calculation Results Display Container -->
+        <div id="customCalcResults" class="hidden border-t border-white/10 pt-5">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB 7: FORMULAS & ENCYCLOPEDIA (REFERENCE MANUAL)       -->
+    <!-- ======================================================= -->
+    <section id="view-encyclopedia" class="space-y-6 hidden">
+      <div class="glass-panel p-6">
+        <div class="mb-6">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center space-x-1.5">
+            <i class="fa-solid fa-book"></i>
+            <span>Academic Reference Manual</span>
+          </div>
+          <h2 class="text-xl font-extrabold text-white">Complete Mathematical Encyclopedia &amp; Viva Reference</h2>
+          <p class="text-xs text-slate-400 mt-1">Full documentation of all 72+ statistical formulas, LaTeX expressions, hypotheses, assumptions, and usage methods.</p>
+        </div>
+
+        <div id="encyclopediaAccordion" class="space-y-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ======================================================= -->
+  <!-- MODAL 1: STATISTICAL CALCULATION WORKBENCH              -->
+  <!-- ======================================================= -->
+  <div id="calcModal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0e1424] border border-white/15 rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl p-6 animate-pop-in relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeCalcModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-sm rounded-lg hover:bg-white/10 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="pr-8 mb-5 border-b border-white/10 pb-4">
+        <div class="flex items-center space-x-2 text-xs font-bold text-brand-400 uppercase tracking-wider mb-1">
+          <span id="modalOptionCategory">Descriptive Statistics</span>
+          <span>&bull;</span>
+          <span id="modalOptionNumber">Option #1</span>
+        </div>
+        <h3 id="modalOptionTitle" class="text-xl font-black text-white">Arithmetic Mean</h3>
+      </div>
+
+      <!-- Formula & Mechanism Box -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+        <!-- KaTeX Math Formula Box -->
+        <div class="bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col justify-center">
+          <div class="text-[11px] uppercase font-bold text-slate-400 mb-2 flex items-center space-x-1.5">
+            <i class="fa-solid fa-square-root-variable text-brand-400"></i>
+            <span>Formal Mathematical Formula</span>
+          </div>
+          <div id="modalFormulaLatex" class="text-center py-2 text-slate-100 text-lg overflow-x-auto">
+            <!-- KaTeX injected -->
+          </div>
+        </div>
+
+        <!-- Academic Purpose & Practical Use Box -->
+        <div class="bg-brand-950/30 border border-brand-500/20 rounded-xl p-4 flex flex-col justify-center">
+          <div class="text-[11px] uppercase font-bold text-brand-300 mb-1 flex items-center space-x-1.5">
+            <i class="fa-solid fa-lightbulb text-amber-400"></i>
+            <span>Analytical Mechanism &amp; Purpose</span>
+          </div>
+          <p id="modalDescEn" class="text-xs text-slate-300 leading-relaxed font-medium">
+            <!-- English explanation -->
+          </p>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Formula Application Guide Box -->
+      <div class="bg-slate-900/90 border border-white/10 rounded-xl p-4 mb-5">
+        <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+          <i class="fa-solid fa-list-check"></i>
+          <span>How to Use This Formula (Step-by-Step Practical Calculation Guide)</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs" id="modalHowToUseContainer">
+          <!-- Step 1 to Step 4 injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Interactive Inputs Bar -->
+      <div id="modalInputsContainer" class="bg-slate-900/90 border border-white/10 rounded-xl p-4 mb-5 flex flex-wrap items-center gap-4">
+        <!-- Injected dynamically based on option requirements -->
+      </div>
+
+      <!-- Run Action Button -->
+      <div class="flex justify-end mb-6">
+        <button id="btnExecuteCalc" onclick="executeCurrentCalculation()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all flex items-center space-x-2">
+          <i class="fa-solid fa-play"></i>
+          <span>Run Analysis on Live Dataset</span>
+        </button>
+      </div>
+
+      <!-- Results Display Section -->
+      <div id="modalResultsSection" class="border-t border-white/10 pt-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="text-xs uppercase font-extrabold text-slate-300 tracking-wider flex items-center space-x-2">
+            <i class="fa-solid fa-square-poll-vertical text-emerald-400"></i>
+            <span>Computation Results &amp; Analytical Verdict</span>
+          </h4>
+          <button onclick="openFullViewForModalChart()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-colors">
+            <i class="fa-solid fa-expand text-[10px] text-brand-400"></i>
+            <span>Full View Graph</span>
+          </button>
+        </div>
+
+        <!-- Results Table -->
+        <div class="overflow-x-auto border border-white/10 rounded-xl mb-4">
+          <table class="w-full text-left text-xs">
+            <tbody id="modalResultsTableBody" class="divide-y divide-white/5 bg-slate-950/60 text-slate-200">
+              <!-- Result rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Interpretation Alert Banner -->
+        <div id="modalInterpretationBanner" class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 flex items-start space-x-2.5 mb-4">
+          <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+          <div id="modalInterpretationText" class="font-medium">
+            <!-- Interpretation text -->
+          </div>
+        </div>
+
+        <!-- Modal Chart Container -->
+        <div id="modalChartWrapper" class="h-64 border border-white/10 rounded-xl p-3 bg-slate-950/50 relative">
+          <canvas id="modalChartCanvas"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================= -->
+  <!-- MODAL 2: FULL VIEW / EXPANDED GRAPH & ANALYSIS MODAL   -->
+  <!-- ======================================================= -->
+  <div id="fullViewModal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0b101d] border border-white/20 rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl p-6 animate-pop-in relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeFullViewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-sm rounded-lg hover:bg-white/10 transition-colors">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- Header -->
+      <div class="pr-8 mb-4 border-b border-white/10 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <div class="flex items-center space-x-2 text-xs font-bold text-cyan-400 uppercase tracking-wider mb-0.5">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Interactive Full-Screen Analytical View</span>
+          </div>
+          <h3 id="fullViewTitle" class="text-xl font-black text-white">Expanded Graph &amp; Breakdown</h3>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="downloadFullViewChartPNG()" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold flex items-center space-x-1.5 transition-colors">
+            <i class="fa-solid fa-camera"></i>
+            <span>Download PNG</span>
+          </button>
+          <button onclick="closeFullViewModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+
+      <!-- High Resolution Full Canvas -->
+      <div class="h-[460px] border border-white/10 rounded-xl p-4 bg-slate-950/70 mb-5 relative">
+        <canvas id="fullViewCanvas"></canvas>
+      </div>
+
+      <!-- Data Details & Distribution Table -->
+      <div class="border border-white/10 rounded-xl p-4 bg-slate-900/60">
+        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center space-x-2">
+          <i class="fa-solid fa-table text-emerald-400"></i>
+          <span>Full-View Data Points &amp; Statistical Breakdown</span>
+        </h4>
+        <div id="fullViewBreakdownTable" class="overflow-x-auto text-xs text-slate-300">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================= -->
+  <!-- MODAL 3: SCRIPT & FORMULA CODE CONSOLE (<>)             -->
+  <!-- ======================================================= -->
+  <div id="scriptModal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0b101d] border border-white/20 rounded-2xl w-full max-w-5xl max-h-[92vh] overflow-y-auto shadow-2xl p-6 animate-pop-in relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeScriptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-sm rounded-lg hover:bg-white/10 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Header -->
+      <div class="pr-8 mb-4 border-b border-white/10 pb-3 flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-mono font-extrabold text-sm">
+          &lt;&gt;
+        </div>
+        <div>
+          <h3 class="text-xl font-black text-white">Statistical Script &amp; Formula Execution Engine</h3>
+          <p class="text-xs text-slate-400">Python, R, and mathematical algorithm snippets for analyzing student academic pressure data.</p>
+        </div>
+      </div>
+
+      <!-- Script Language Tabs -->
+      <div class="flex items-center space-x-2 border-b border-white/10 pb-3 mb-4">
+        <button onclick="switchScriptTab('python')" class="script-tab active px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white" id="stab-python">
+          <i class="fa-brands fa-python mr-1 text-amber-300"></i> Python (pandas &amp; numpy)
+        </button>
+        <button onclick="switchScriptTab('r')" class="script-tab px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white" id="stab-r">
+          <i class="fa-solid fa-chart-line mr-1 text-cyan-400"></i> R Language
+        </button>
+        <button onclick="switchScriptTab('guide')" class="script-tab px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white" id="stab-guide">
+          <i class="fa-solid fa-book-open mr-1 text-emerald-400"></i> Step-by-Step Formula Application Manual
+        </button>
+      </div>
+
+      <!-- Script Content 1: Python -->
+      <div id="scontent-python" class="space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Complete ready-to-run Python script for academic stress data:</span>
+          <button onclick="copyScriptCode('pythonCodeBlock')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center space-x-1">
+            <i class="fa-solid fa-copy"></i>
+            <span>Copy Python Code</span>
+          </button>
+        </div>
+        <pre class="bg-black/60 border border-white/10 rounded-xl p-4 text-xs font-mono text-emerald-300 overflow-x-auto max-h-96" id="pythonCodeBlock"><code># ==============================================================================
+# Student Academic Stress & Wellbeing Statistical Analysis Script (Python)
+# ==============================================================================
+import pandas as pd
+import numpy as np
+
+# 1. Load active student dataset
+df = pd.read_csv("stats_pro/data/active_dataset.csv")
+print(f"Total Cohort Size: {len(df)} students")
+
+# 2. Key Descriptive Statistics
+mean_stress = df['stress_level'].mean()
+std_stress = df['stress_level'].std(ddof=1)
+median_sleep = df['sleep_hours'].median()
+burnout_index = df['burnout_index'].mean()
+print(f"Mean Stress: {mean_stress:.2f} ± {std_stress:.2f}")
+print(f"Median Sleep: {median_sleep:.2f} hours")
+print(f"Cohort Mean Burnout Index: {burnout_index:.1f}%")
+
+# 3. Pearson Correlation (Workload vs Stress)
+r = np.corrcoef(df['workload'], df['stress_level'])[0, 1]
+print(f"Pearson Correlation r(Workload, Stress) = {r:.3f}")
+
+# 4. Independent Two-Sample Comparison (Sleep Deficit vs Normal Sleep)
+group_deficit = df[df['sleep_deficit'] == True]['burnout_index']
+group_normal = df[df['sleep_deficit'] == False]['burnout_index']
+t_stat = (group_deficit.mean() - group_normal.mean()) / np.sqrt(
+    group_deficit.var()/len(group_deficit) + group_normal.var()/len(group_normal)
+)
+print(f"Welch t-Statistic: {t_stat:.3f} (Significant Burnout Disparity)")
+
+# 5. Ordinary Least Squares (OLS) Regression
+slope, intercept = np.polyfit(df['workload'], df['stress_level'], 1)
+print(f"OLS Regression Line: Stress = {intercept:.2f} + {slope:.2f} * Workload")
+</code></pre>
+      </div>
+
+      <!-- Script Content 2: R Language -->
+      <div id="scontent-r" class="space-y-3 hidden">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Complete ready-to-run R script for hypothesis tests:</span>
+          <button onclick="copyScriptCode('rCodeBlock')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center space-x-1">
+            <i class="fa-solid fa-copy"></i>
+            <span>Copy R Code</span>
+          </button>
+        </div>
+        <pre class="bg-black/60 border border-white/10 rounded-xl p-4 text-xs font-mono text-cyan-300 overflow-x-auto max-h-96" id="rCodeBlock"><code># ==============================================================================
+# Student Academic Stress & Wellbeing Statistical Analysis Script (R)
+# ==============================================================================
+data <- read.csv("stats_pro/data/active_dataset.csv")
+
+# 1. Descriptive Summary
+summary(data[, c("workload", "sleep_hours", "stress_level", "burnout_index")])
+
+# 2. Pearson & Spearman Correlation
+cor.test(data$workload, data$stress_level, method="pearson")
+cor.test(data$workload, data$stress_level, method="spearman")
+
+# 3. Two-Sample Welch t-Test
+t.test(burnout_index ~ sleep_deficit, data = data)
+
+# 4. One-Way ANOVA across Academic Departments
+anova_model <- aov(stress_level ~ branch_code, data = data)
+summary(anova_model)
+
+# 5. Multiple Linear Regression Model
+model <- lm(burnout_index ~ workload + sleep_hours + screen_time + time_mgmt_diff, data = data)
+summary(model)
+</code></pre>
+      </div>
+
+      <!-- Script Content 3: How to Apply Formulas Guide -->
+      <div id="scontent-guide" class="space-y-4 text-xs text-slate-300 hidden">
+        <div class="p-4 rounded-xl bg-slate-900 border border-white/10">
+          <h4 class="font-bold text-white text-sm mb-2 flex items-center space-x-2">
+            <i class="fa-solid fa-compass text-amber-400"></i>
+            <span>Universal Statistical Decision Protocol</span>
+          </h4>
+          <ol class="list-decimal pl-5 space-y-2 leading-relaxed">
+            <li><strong>Step 1 (Formulate Hypotheses):</strong> State the Null Hypothesis $H_0$ (no effect, no correlation, equal means) and Alternative Hypothesis $H_1$ (statistically significant effect).</li>
+            <li><strong>Step 2 (Select Data Columns):</strong> Choose the independent variable(s) $X$ and dependent target metric $Y$ from the survey questions.</li>
+            <li><strong>Step 3 (Calculate Test Statistic):</strong> Compute the sample statistic ($t, F, \chi^2, r, z$) by dividing the observed deviation by the standard error.</li>
+            <li><strong>Step 4 (Evaluate Significance):</strong> At confidence level $\alpha = 0.05$, if $p < 0.05$, reject $H_0$ and declare statistical significance with 95% confidence.</li>
+            <li><strong>Step 5 (Clinical & Academic Impact):</strong> Translate the mathematical verdict into student counseling recommendations (e.g. adjust assignment FAT schedules, recommend sleep hygiene workshops).</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================= -->
+  <!-- MODAL 4: ADD / EDIT STUDENT RECORD                      -->
+  <!-- ======================================================= -->
+  <div id="studentModal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0e1424] border border-white/15 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 animate-pop-in relative">
+      
+      <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-sm rounded-lg hover:bg-white/10 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="pr-8 mb-5 border-b border-white/10 pb-3">
+        <h3 id="studentModalTitle" class="text-lg font-black text-white">Add New Student Survey Record</h3>
+        <p class="text-xs text-slate-400">Enter survey answers. All 72+ statistical calculations will immediately incorporate this record.</p>
+      </div>
+
+      <form id="studentForm" onsubmit="saveStudent(event)" class="space-y-4">
+        <input type="hidden" id="studentFormId" value="">
+
+        <!-- Basic Demographic Fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+            <input type="text" id="sf_name" required placeholder="e.g. Ramesh K" class="w-full px-3 py-2 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Register Number</label>
+            <input type="text" id="sf_reg_no" required placeholder="e.g. 26BCE3143" class="w-full px-3 py-2 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+          <input type="email" id="sf_email" placeholder="student@college.edu" class="w-full px-3 py-2 bg-slate-900 border border-white/10 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <!-- Academic & Psychological Likert Survey Selectors -->
+        <div class="border-t border-white/10 pt-4">
+          <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider mb-3">Academic Pressure &amp; Wellbeing Responses</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">1. Academic Workload</label>
+              <select id="sf_workload" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Very low">Very low</option>
+                <option value="Manageable">Manageable</option>
+                <option value="High" selected>High</option>
+                <option value="Extremely high">Extremely high</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">2. Overwhelmed by FATs/Quizzes</label>
+              <select id="sf_overwhelmed" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Never">Never</option>
+                <option value="Rarely">Rarely</option>
+                <option value="Sometimes" selected>Sometimes</option>
+                <option value="Often">Often</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">5. Daily Study Hours Outside Class</label>
+              <select id="sf_study_hours" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Less than 1 hour">Less than 1 hour</option>
+                <option value="1-2 hours" selected>1-2 hours</option>
+                <option value="3-4 hours">3-4 hours</option>
+                <option value="More than 4 hours">More than 4 hours</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">10. Sleep Hours Per Night</label>
+              <select id="sf_sleep_hours" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Less than 5 hours">Less than 5 hours</option>
+                <option value="5-6 hours" selected>5-6 hours</option>
+                <option value="6-8 hours">6-8 hours</option>
+                <option value="More than 8 hours">More than 8 hours</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">12. Non-Academic Screen Time</label>
+              <select id="sf_screen_time" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Less than 1 hour">Less than 1 hour</option>
+                <option value="1-2 hours" selected>1-2 hours</option>
+                <option value="3-4 hours">3-4 hours</option>
+                <option value="More than 4 hours">More than 4 hours</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">13. Current Stress Level</label>
+              <select id="sf_stress_level" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Very low">Very low</option>
+                <option value="Low">Low</option>
+                <option value="Moderate" selected>Moderate</option>
+                <option value="High or very high">High or very high</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">15. Burnout &amp; Exhaustion</label>
+              <select id="sf_burnout" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Never">Never</option>
+                <option value="Rarely">Rarely</option>
+                <option value="Sometimes" selected>Sometimes</option>
+                <option value="Often">Often</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">20. Emotional / Peer Support</label>
+              <select id="sf_support_system" class="w-full px-3 py-1.5 bg-slate-900 border border-white/10 rounded-lg text-slate-200">
+                <option value="Rarely or never">Rarely or never</option>
+                <option value="Sometimes" selected>Sometimes</option>
+                <option value="Often">Often</option>
+                <option value="Always">Always</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
+          <button type="button" onclick="closeStudentModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-lg shadow-emerald-600/30">
+            Save Record &amp; Recalculate
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: INDIVIDUAL STUDENT STRESS DIAGNOSTIC & SOLUTION  -->
+  <!-- ======================================================= -->
+  <div id="studentSolutionModal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0e1424] border border-white/15 rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto shadow-2xl p-6 animate-pop-in relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeStudentSolutionModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-sm rounded-lg hover:bg-white/10 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Content Container -->
+      <div id="studentSolutionModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden px-4 py-3 rounded-xl bg-slate-900 border border-white/20 text-white text-xs font-semibold shadow-2xl flex items-center space-x-2 animate-pop-in">
+    <i id="toastIcon" class="fa-solid fa-check text-emerald-400"></i>
+    <span id="toastMsg">Operation successful</span>
+  </div>
+
+  <!-- Embedded Offline Cohort Dataset (Ensures 100% functionality on Netlify & Static Hosts) -->
+  <script src="embedded_dataset.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
